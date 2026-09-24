@@ -1,0 +1,6 @@
+{
+  "name": "NiftyPulse - NSE/BSE TradingView & PineScript Terminal",
+  "description": "Personal NSE & BSE Indian stock market charting terminal with TradingView charts, Pine Script v4/v5 editor & strategy execution engine, free market data, and GitHub Pages export.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
