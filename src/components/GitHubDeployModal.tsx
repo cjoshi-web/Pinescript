@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { X, Copy, Check, Github, Globe, Terminal, Sparkles, Download, Loader2 } from 'lucide-react';
-import { downloadProjectZip } from '../services/exportZip';
+import { X, Copy, Check, Github, Globe, Terminal, Sparkles, Download } from 'lucide-react';
 
 interface GitHubDeployModalProps {
   isOpen: boolean;
@@ -15,20 +14,6 @@ export const GitHubDeployModal: React.FC<GitHubDeployModalProps> = ({
 }) => {
   const [copiedWorkflow, setCopiedWorkflow] = useState(false);
   const [copiedCommands, setCopiedCommands] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadMsg, setDownloadMsg] = useState('');
-
-  const handleDownloadZip = async () => {
-    try {
-      setIsDownloading(true);
-      await downloadProjectZip((msg) => setDownloadMsg(msg));
-    } catch (err) {
-      console.error('Download error:', err);
-    } finally {
-      setIsDownloading(false);
-      setDownloadMsg('');
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -146,42 +131,8 @@ git push -u origin main
 
         {/* Modal Body */}
         <div className="p-5 overflow-y-auto space-y-6 text-xs text-neutral-300">
-          {/* Download ZIP Highlight Box */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/70 to-neutral-900 border border-emerald-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 font-bold text-white text-sm">
-                <Download className="w-4 h-4 text-emerald-400" />
-                <span>
-                  {language === 'gu' ? 'સંપૂર્ણ પ્રોજેક્ટ .ZIP ફાઈલ ડાઉનલોડ કરો' : 'Download Complete Project (.ZIP)'}
-                </span>
-              </div>
-              <p className="text-neutral-400 text-xs">
-                {language === 'gu'
-                  ? 'બધા જ React, TypeScript, Pine Script એન્જિન, Vite કન્ફિગ અને GitHub Actions ની ફાઇલો સાથે તૈયાર પેકેજ.'
-                  : 'Ready-to-run package containing all source code, Pine Script runner, configs, and GitHub Actions deployer.'}
-              </p>
-            </div>
-
-            <button
-              onClick={handleDownloadZip}
-              disabled={isDownloading}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white text-xs font-bold transition-all shadow-md shrink-0 disabled:opacity-50"
-            >
-              {isDownloading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Download className="w-4 h-4" />
-              )}
-              <span>
-                {isDownloading
-                  ? (downloadMsg || (language === 'gu' ? 'ડાઉનલોડિંગ...' : 'Downloading...'))
-                  : (language === 'gu' ? 'હમણાં ડાઉનલોડ કરો' : 'Download Now')}
-              </span>
-            </button>
-          </div>
-
           {/* Summary Box */}
-          <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/20 flex items-start gap-3">
+          <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-start gap-3">
             <Sparkles className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               {language === 'gu' ? (
@@ -191,6 +142,28 @@ git push -u origin main
               ) : (
                 <span>
                   This application is a 100% client-side <strong>React + Vite + TypeScript</strong> SPA. It requires zero backend servers and can be hosted completely free of charge on GitHub Pages with instant HTTPS and global CDN.
+                </span>
+              )}
+            </p>
+          </div>
+
+          {/* Troubleshooting 404 main.tsx banner */}
+          <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/30 space-y-1.5">
+            <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs">
+              <span>⚠️ {language === 'gu' ? '"Failed to load 404 main.tsx" એરર આવી રહી છે?' : 'Getting "Failed to load 404 main.tsx" error?'}</span>
+            </div>
+            <p className="text-[11px] text-neutral-300 leading-relaxed">
+              {language === 'gu' ? (
+                <span>
+                  આ એરર ત્યારે આવે છે જ્યારે GitHub Pages માં Source તરીકે <strong>"Deploy from a branch (main / root)"</strong> પસંદ કરેલું હોય. બ્રાઉઝર ક્યારેય સીધી <code>.tsx</code> ફાઇલ ચલાવી શકતું નથી.
+                  <br />
+                  <strong>સોલ્યુશન:</strong> GitHub Repo -&gt; <strong>Settings</strong> -&gt; <strong>Pages</strong> માં જાઓ અને <strong>Source</strong> માં <strong>"Deploy from a branch"</strong> ની જગ્યાએ <strong>"GitHub Actions"</strong> પસંદ કરો! GitHub આપોઆપ કોડ બિલ્ડ કરીને ચાલુ કરી દેશે.
+                </span>
+              ) : (
+                <span>
+                  This happens if GitHub Pages Source is set to <strong>"Deploy from a branch (main / root)"</strong>. Browsers cannot execute raw <code>.tsx</code> files without compiling.
+                  <br />
+                  <strong>Solution:</strong> Go to your GitHub Repo -&gt; <strong>Settings</strong> -&gt; <strong>Pages</strong> and switch <strong>Source</strong> to <strong>"GitHub Actions"</strong>!
                 </span>
               )}
             </p>
